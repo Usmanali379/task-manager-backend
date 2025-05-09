@@ -2,6 +2,13 @@
 
 A robust backend for the Task Manager application, built with Node.js, Express, and MongoDB. This backend provides secure RESTful APIs for user authentication, task management, and analytics, with best practices for validation and security.
 
+
+## 🚀 Live Demo
+
+Check out the live app here:  
+[https://task-management-frontend-rouge-ten.vercel.app](https://task-management-frontend-rouge-ten.vercel.app)
+
+
 ## Features
 
 - **RESTful API**: Endpoints for tasks, users, and analytics
