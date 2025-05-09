@@ -17,7 +17,7 @@ const app = express();
 app.use(helmet()); // Security headers
 app.use(cors({
 //   origin: 'https://task-management-frontend-rouge-ten.vercel.app' || 'http://localhost:3000',
-  origin: 'http://localhost:3000',
+  origin: true,
   credentials: true
 }));
 
