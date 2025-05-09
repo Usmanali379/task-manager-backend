@@ -16,7 +16,8 @@ const app = express();
 // Security middleware
 app.use(helmet()); // Security headers
 app.use(cors({
-  origin: 'https://task-management-frontend-rouge-ten.vercel.app' || 'http://localhost:3000',
+//   origin: 'https://task-management-frontend-rouge-ten.vercel.app' || 'http://localhost:3000',
+  origin: 'http://localhost:3000',
   credentials: true
 }));
 
@@ -34,6 +35,11 @@ app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 // Routes
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/tasks', require('./routes/taskRoutes'));
+
+// Home route for health check
+app.get('/', (req, res) => {
+  res.json({ message: 'Task Manager API is running' });
+});
 
 // Error handling middleware
 app.use((err, req, res, next) => {
