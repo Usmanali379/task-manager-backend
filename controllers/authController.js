@@ -1,21 +1,27 @@
 const User = require('../models/User');
 const generateToken = require('../utils/generateToken');
 
+// @desc    Register new user
+// @route   POST /api/auth/register
+// @access  Public
 const registerUser = async (req, res) => {
     try {
-        const { username, email, password } = req.body;
+        const { username, email, password, role } = req.body;
 
-        // Check if user exists
+        // Check if user already exists
         const userExists = await User.findOne({ $or: [{ email }, { username }] });
         if (userExists) {
             return res.status(400).json({ message: 'User already exists' });
         }
 
-        // Create user
+        // Safely assign role: only 'admin' if explicitly passed, otherwise default to 'user'
+        const assignedRole = role === 'admin' ? 'admin' : 'user';
+
         const user = await User.create({
             username,
             email,
             password,
+            role: assignedRole
         });
 
         if (user) {
@@ -23,6 +29,7 @@ const registerUser = async (req, res) => {
                 _id: user._id,
                 username: user.username,
                 email: user.email,
+                role: user.role,
                 token: generateToken(user._id),
             });
         }
@@ -31,12 +38,13 @@ const registerUser = async (req, res) => {
     }
 };
 
-
+// @desc    Login user
+// @route   POST /api/auth/login
+// @access  Public
 const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        // Find user
         const user = await User.findOne({ email });
 
         if (user && (await user.matchPassword(password))) {
@@ -44,6 +52,7 @@ const loginUser = async (req, res) => {
                 _id: user._id,
                 username: user.username,
                 email: user.email,
+                role: user.role,
                 token: generateToken(user._id),
             });
         } else {
@@ -60,12 +69,13 @@ const loginUser = async (req, res) => {
 const getMe = async (req, res) => {
     try {
         const user = await User.findById(req.user._id).select('-password');
-        
+
         if (user) {
             res.json({
                 _id: user._id,
                 username: user.username,
                 email: user.email,
+                role: user.role
             });
         } else {
             res.status(404).json({ message: 'User not found' });
@@ -79,4 +89,4 @@ module.exports = {
     registerUser,
     loginUser,
     getMe,
-}; 
+};
